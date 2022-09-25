@@ -14,6 +14,7 @@ function Post() {
     return (
         <div>
             <h1>{post.title}</h1>
+            <h4>By: {post.user.full_name}</h4>
             <div>{post.content}</div>
         </div>
     )

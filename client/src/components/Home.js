@@ -11,13 +11,14 @@ function Home() {
         .then((res) => res.json())
         .then((data) => setPosts(data))
     }, [])
-
+    console.log(posts)
     return (
         <div>
             Posts:
             {posts.map((post) => (
                 <Link to={`/post/${post.id}`}>
                     <h1>{post.title}</h1>
+                    <h4>By: {post.user.full_name}</h4>
                     <div>{post.summary}</div>
                 </Link>
             ))}
