@@ -7,20 +7,21 @@ function Home() {
     const [posts, setPosts] = useState([])
     
     useEffect(() => {
-        fetch("http://localhost:3000/posts")
+        fetch("/posts")
         .then((res) => res.json())
         .then((data) => setPosts(data))
     }, [])
-    console.log(posts)
     return (
         <div>
             Posts:
             {posts.map((post) => (
-                <Link to={`/post/${post.id}`}>
-                    <h1>{post.title}</h1>
-                    <h4>By: {post.user.full_name}</h4>
-                    <div>{post.summary}</div>
-                </Link>
+                <>
+                    <Link to={`/post/${post.id}`} key={post.id}>
+                        <h1>{post.title}</h1>
+                        <div>{post.summary}</div>
+                    </Link>
+                    <Link to={`/users/${post.user.id}`}>By: {post.user.full_name}</Link>
+                </>
             ))}
         </div>
     )
