@@ -20,7 +20,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp setUser={setUser} />} />
         <Route path="/post/:postId" element={<Post user={user} />} />
         <Route path="/posts/new" element={<NewPost />} />
-        <Route path="/users/:userId" element={<Profile user={user}/>} />
+        <Route path="/users/:userId" element={<Profile user={user} />} />
       </Routes>
     </BrowserRouter>
   );

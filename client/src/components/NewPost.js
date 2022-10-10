@@ -36,12 +36,13 @@ function NewPost() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
             />
-            <label htmlFor="post">Post</label>
-            <input
-                type='text'
+            <p><label htmlFor="post">Post:</label></p>
+            <textarea
                 id='post'
                 autoComplete="off"
                 value={content}
+                rows="10"
+                cols="50"
                 onChange={(e) => setContent(e.target.value)}
             />
             <button type='submit'>Create Post</button>

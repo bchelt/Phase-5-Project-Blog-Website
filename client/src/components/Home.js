@@ -15,13 +15,13 @@ function Home() {
         <div>
             Posts:
             {posts.map((post) => (
-                <>
-                    <Link to={`/post/${post.id}`} key={post.id}>
+                <div key={post.id}>
+                    <Link to={`/post/${post.id}`}>
                         <h1>{post.title}</h1>
                         <div>{post.summary}</div>
                     </Link>
                     <Link to={`/users/${post.user.id}`}>By: {post.user.full_name}</Link>
-                </>
+                </div>
             ))}
         </div>
     )
