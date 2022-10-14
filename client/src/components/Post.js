@@ -7,6 +7,7 @@ function Post({ user }) {
     const [comments, setComments] = useState([])
     const [clicked, setClicked] = useState(false)
     const [newComment, setNewComment] = useState("")
+    const [tags, setTags] = useState([])
     const { postId } = useParams()
 
     useEffect(() => {
@@ -16,7 +17,7 @@ function Post({ user }) {
             setPost(data)
             setCreator(data.user)
             setComments(data.comments)
-            
+            setTags(data.tags)
         })
     }, [])
     console.log(post)
@@ -45,6 +46,9 @@ function Post({ user }) {
     return (
         <div>
             <h1>{post.title}</h1>
+            <div>Tags: {tags.map((tag) => (
+                <span key={tag.id}>{tag.category} </span>
+            ))}</div>
             <Link to={`/users/${creator.id}`}><h4>By: {creator.full_name}</h4></Link>
             <div>{post.content}</div>
             {user

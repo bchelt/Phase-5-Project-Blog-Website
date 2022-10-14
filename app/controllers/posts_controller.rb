@@ -11,7 +11,7 @@ class PostsController < ApplicationController
 
     def create
         if session[:user_id]
-            post = Post.create(title: params[:title], content: params[:content], user_id: session[:user_id], summary: summary_param)
+            post = Post.create(title: params[:title], content: params[:content], user_id: session[:user_id], tags: tags_param, summary: summary_param)
             if post.valid?
                 render json: post, status: :created
             else
@@ -32,6 +32,10 @@ class PostsController < ApplicationController
     end
 
     private
+
+    def tags_param
+        tags = Tag.where(category: params[:tags])
+    end
     
     def summary_param
         summary = params[:content][0, 50] + "..."

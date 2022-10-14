@@ -11,6 +11,7 @@ function Home() {
         .then((res) => res.json())
         .then((data) => setPosts(data))
     }, [])
+    console.log(posts)
     return (
         <div>
             Posts:
@@ -18,6 +19,9 @@ function Home() {
                 <div key={post.id}>
                     <Link to={`/post/${post.id}`}>
                         <h1>{post.title}</h1>
+                        <div>Tags: {post.tags.map((tag) => (
+                            <span key={tag.id}>{tag.category} </span>
+                        ))}</div>
                         <div>{post.summary}</div>
                     </Link>
                     <Link to={`/users/${post.user.id}`}>By: {post.user.full_name}</Link>
