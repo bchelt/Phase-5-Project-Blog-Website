@@ -12,6 +12,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   return (
+    
     <BrowserRouter>
       <Nav user={user} setUser={setUser} />
       <Routes>
@@ -22,6 +23,7 @@ function App() {
         <Route path="/posts/new" element={<NewPost />} />
         <Route path="/users/:userId" element={<Profile user={user} />} />
       </Routes>
+      
     </BrowserRouter>
   );
 }

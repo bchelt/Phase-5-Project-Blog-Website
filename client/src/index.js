@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ModalsProvider } from '@mantine/modals';
 
 ReactDOM.render(
   <React.StrictMode>
+    <ModalsProvider>
     <App />
+    </ModalsProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

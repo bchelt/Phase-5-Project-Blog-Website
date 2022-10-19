@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
     def index
-        posts = Post.all
+        posts = Post.order(created_at: :desc)
         render json: posts
     end
 
@@ -11,7 +11,7 @@ class PostsController < ApplicationController
 
     def create
         if session[:user_id]
-            post = Post.create(title: params[:title], content: params[:content], user_id: session[:user_id], tags: tags_param, summary: summary_param)
+            post = Post.create(title: params[:title], content: params[:content], user_id: session[:user_id], tags: tags_param)
             if post.valid?
                 render json: post, status: :created
             else

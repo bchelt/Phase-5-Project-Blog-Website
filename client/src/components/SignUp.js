@@ -1,10 +1,16 @@
 import { useState } from 'react';
+import { TextInput, PasswordInput, Button, Group, Box } from '@mantine/core'; 
+import { useNavigate } from 'react-router-dom';
+
 function SignUp({ setUser }) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [passwordConfirm, setPasswordConfirm] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
+    const [err, setErr] = useState('')
+    const navigate = useNavigate()
+
     function handleSubmit(e) {
         e.preventDefault();
         let fullName = firstName + ' ' + lastName
@@ -21,56 +27,52 @@ function SignUp({ setUser }) {
             })
         }).then((res) => {
             if (res.ok) {
-                res.json().then((user) => setUser(user))
+                res.json().then((user) => {
+                    setUser(user)
+                    navigate('/')
+                })
             } else {
-                console.log('signup not ok')
-                console.log(res.json())
+                res.json().then((error) => setErr(error.errors))
             }
         })
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor='first_name'>First Name</label>
-            <input required
-                type='text'
-                id='first_name'
-                autoComplete="off"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)} 
-            />
-            <label htmlFor='last_name'>Last Name</label>
-            <input required
-                type='text'
-                id='last_name'
-                autoComplete="off"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-            />
-            <label htmlFor='username'>Username</label>
-            <input required
-                type='text' 
-                id='username' 
-                autoComplete="off"
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-            />
-            <label htmlFor='password'>Password</label>
-            <input required
-                type='password' 
-                id='password' 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-            />
-            <label htmlFor='password_confirmation'>Password Confirmation</label>
-            <input required
-                type='password' 
-                id='password_confirmation' 
-                value={passwordConfirm} 
-                onChange={(e) => setPasswordConfirm(e.target.value)} 
-            />
-            <button type='submit'>Sign Up</button>
-        </form>
+        <Box sx={{ maxWidth: 400 }} mx="auto">
+            <form onSubmit={handleSubmit}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <TextInput required
+                        label='First Name'
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)} 
+                    />
+                    <TextInput required
+                        label='Last Name'
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                    />
+                </Box>
+                <TextInput required
+                    label='Username'
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                />
+                <PasswordInput required
+                    label='Password' 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                />
+                <PasswordInput required
+                    label='Confirm Password'
+                    value={passwordConfirm} 
+                    onChange={(e) => setPasswordConfirm(e.target.value)} 
+                />
+                <div style={{ color: 'red' }}>{err}</div>
+                <Group position="right" mt="md">
+                    <Button type='submit'>Sign Up</Button>
+                </Group>
+            </form>
+        </Box>
     )
 }
 

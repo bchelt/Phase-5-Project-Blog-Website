@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Text, TextInput, Textarea, Button, Tabs, TypographyStylesProvider, Menu, Burger } from '@mantine/core';
+import { openConfirmModal } from '@mantine/modals';
 
 function Profile({ user }) {
     const [profile, setProfile] = useState({})
@@ -10,6 +12,31 @@ function Profile({ user }) {
     const [nameEdit, setNameEdit] = useState("")
     const [bioEdit, setBioEdit] = useState("")
     const [editMode, setEditMode] = useState(false)
+    const navigate = useNavigate()
+
+    const openModal = (id, type) => {
+        console.log('here')
+        openConfirmModal({
+        title: 'Please confirm',
+        children: (
+            <Text>
+                Are you sure you want to delete this {type}? This process is irreversible.
+            </Text>
+        ),
+        labels: { confirm: 'Confirm', cancel: 'Cancel' },
+        onCancel: () => console.log(id),
+        onConfirm: () => {
+            if(type === 'post'){
+                deletePost(id)
+            }
+            else if (type === 'comment') {
+                deleteComment(id)
+            }
+            else if (type === 'account') {
+                deleteAccount(id)
+            }
+        }
+    })}
     
     useEffect(() => { 
         fetch(`/users/${userId}`)
@@ -51,75 +78,135 @@ function Profile({ user }) {
         })
     }
 
-    function deletePost(e) {
-        fetch(`/posts/${e.target.id}`, {
+    function deletePost(id) {
+        fetch(`/posts/${id}`, {
             method: "DELETE"
         }).then((res) => {
             if (res.ok) {
-                let newPosts = posts.filter((post) => {return post.id != e.target.id})
+                let newPosts = posts.filter((post) => {return post.id != id})
                 setPosts(newPosts)
-                let newComments = comments.filter((comment) => {return comment.post_id != e.target.id})
+                let newComments = comments.filter((comment) => {return comment.post_id != id})
+                setComments(newComments)
+            }
+        })
+    }
+    function deleteComment(id) {
+        fetch(`/comments/${id}`, {
+            method: "DELETE"
+        }).then((res) => {
+            if (res.ok) {
+                let newComments = comments.filter((comment) => {return comment.id != id})
                 setComments(newComments)
             }
         })
     }
 
-    function deleteComment(e) {
-        fetch(`/comments/${e.target.id}`, {
+    function deleteAccount(id) {
+        fetch(`/users/${id}`, {
             method: "DELETE"
         }).then((res) => {
             if (res.ok) {
-                let newComments = comments.filter((comment) => {return comment.id != e.target.id})
-                setComments(newComments)
+                navigate('/')
             }
         })
     }
+
     if (editable) {
         return (
             editMode ? (
-            <form onSubmit={handleSubmit}>
-                <button onClick={handleClick}>Cancel</button>
-                <input type='text' autoComplete="off" value={nameEdit} onChange={(e) => setNameEdit(e.target.value)} />
-                <input type='text' autoComplete="off" value={bioEdit} onChange={(e) => setBioEdit(e.target.value)} />
-                <button type='submit'>Confirm</button>
-            </form>
+            <Box sx={{ maxWidth: 1000 }} mx='auto'>
+                <form onSubmit={handleSubmit}>
+                    
+                    <TextInput label='Full Name' value={nameEdit} onChange={(e) => setNameEdit(e.target.value)} />
+                    <Textarea label='Bio' value={bioEdit} onChange={(e) => setBioEdit(e.target.value)} />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Button variant='outline' color='red' onClick={handleClick}>Cancel</Button>
+                        <Button type='submit'>Confirm</Button>
+                    </Box>
+                </form>
+            </Box>
             )
             : (
-            <div>
-                <button onClick={handleClick}>Edit Profile</button>
-                <h4>{profile.full_name}</h4>
-                <div>{profile.bio}</div>
-                <div>Posts:</div>
-                {posts.map((post) => (
-                    <div key={post.id}>
-                        <h1>{post.title}</h1>
-                        <button id={post.id} onClick={deletePost}>Delete Post</button>
-                    </div>
-                ))}
-                <div>Comments:</div>
-                {comments.map((comment) => (
-                    <div key={comment.id}>
-                        <div>{comment.content}</div>
-                        <button id={comment.id} onClick={deleteComment}>Delete Comment</button>
-                    </div>
-                ))}
-            </div>
+            <Box sx={{ maxWidth: 1000 }} mx='auto' >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <h1>{profile.full_name}</h1>
+                    {/* <Button sx={{ alignSelf: 'center' }} variant='subtle' onClick={handleClick}>Edit Profile</Button> */}
+                    <Menu shadow='md' width={200} trigger='hover'>
+                        <Menu.Target>
+                            <Burger
+                                sx={{ alignSelf: 'center' }}
+                            />
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item onClick={handleClick}>Edit Profile</Menu.Item>
+                            <Menu.Item color='red' onClick={() => openModal(userId, 'account')}>Delete Profile</Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </Box>
+                <p>{profile.bio}</p>
+                <Tabs defaultValue='posts'>
+                    <Tabs.List>
+                        <Tabs.Tab value='posts'>Posts</Tabs.Tab>
+                        <Tabs.Tab value='comments'>Comments</Tabs.Tab>
+                    </Tabs.List>
+                    <Tabs.Panel value='posts'>
+                        {posts.map((post) => (
+                            <div key={post.id}>
+                                <h2>{post.title}</h2>
+                                <Text lineClamp={3}>
+                                    <TypographyStylesProvider>
+                                        <div dangerouslySetInnerHTML={{ __html: post.content }}/>
+                                    </TypographyStylesProvider>
+                                </Text>
+                                <Button variant='white' color='red' id={post.id} onClick={() => openModal(post.id, 'post')}>Delete Post</Button>
+                            </div>
+                        ))}
+                    </Tabs.Panel>
+                    <Tabs.Panel value='comments'>
+                        {comments.map((comment) => (
+                            <div key={comment.id}>
+                                <p>{comment.content}</p>
+                                <Button variant='white' color='red' id={comment.id} onClick={() => openModal(comment.id, 'comment')}>Delete Comment</Button>
+                            </div>
+                        ))}
+                    </Tabs.Panel>
+                </Tabs>
+            </Box>
             )
         )
     } else {
         return (
-            <div>
-                <h4>{profile.full_name}</h4>
-                <div>{profile.bio}</div>
-                <div>Posts:</div>
-                {posts.map((post) => (
-                    <h1 key={post.id}>{post.title}</h1>
-                ))}
-                <div>Comments:</div>
-                {comments.map((comment) => (
-                    <div key={comment.id}>{comment.content}</div>
-                ))}
-            </div>
+            <Box sx={{ maxWidth: 1000 }} mx='auto' >
+                <Box sx={{ display: 'flex' }}>
+                    <h1>{profile.full_name}</h1>
+                </Box>
+                <p>{profile.bio}</p>
+                <Tabs defaultValue='posts'>
+                    <Tabs.List>
+                        <Tabs.Tab value='posts'>Posts</Tabs.Tab>
+                        <Tabs.Tab value='comments'>Comments</Tabs.Tab>
+                    </Tabs.List>
+                    <Tabs.Panel value='posts'>
+                        {posts.map((post) => (
+                            <div key={post.id}>
+                                <h2>{post.title}</h2>
+                                <Text lineClamp={3}>
+                                    <TypographyStylesProvider>
+                                        <div dangerouslySetInnerHTML={{ __html: post.content }}/>
+                                    </TypographyStylesProvider>
+                                </Text>
+                            </div>
+                        ))}
+                    </Tabs.Panel>
+                    <Tabs.Panel value='comments'>
+                        {comments.map((comment) => (
+                            <div key={comment.id}>
+                                <p>{comment.content}</p>
+                            </div>
+                        ))}
+                    </Tabs.Panel>
+                </Tabs>
+            </Box>
         )
     }
 }

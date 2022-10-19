@@ -1,8 +1,13 @@
-import React from "react"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState } from "react"
+import { Link, useNavigate, useLocation } from "react-router-dom"
+import { Box, NavLink, Button } from '@mantine/core';
+
 
 function Nav({ user, setUser }) {
     let navigate = useNavigate();
+    const location = useLocation();
+
+
     function handleLogout() {
         fetch("/logout", {
             method: "DELETE"
@@ -16,33 +21,26 @@ function Nav({ user, setUser }) {
     
     if (user) {
         return (
-            <nav>
-                <Link to="/">
-                    Home
-                </Link>
-                <Link to="/posts/new">
-                    New Post
-                </Link>
-                <Link to={`/users/${user.id}`}>
-                    Profile
-                </Link>
-                <button onClick={handleLogout}>Logout</button>
-            </nav>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <NavLink sx={{width: 65}} label="Home" to="/" component={Link} active={location.pathname === '/'}/>
+                <Box sx={{display: 'flex'}}>
+                    <NavLink sx={{width: 82}} label="New Post" to="/posts/new" component={Link} active={location.pathname === '/posts/new'}/>
+                    <NavLink sx={{width: 64}} label="Profile" to={`/users/${user.id}`} component={Link} active={location.pathname === `/users/${user.id}`}/>
+                    <Button variant="default" onClick={handleLogout}>Logout</Button>
+                </Box>
+                
+            </Box>
         )
     }
     else {
         return (
-            <nav>
-                <Link to="/">
-                    Home
-                </Link>
-                <Link to="/login">
-                    Login
-                </Link>
-                <Link to="/sign-up">
-                    Sign Up
-                </Link>
-            </nav>
+            <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                <NavLink sx={{width: 65}} label="Home" to="/" component={Link} active={location.pathname === '/'}/>
+                <Box sx={{display: 'flex'}}>
+                    <NavLink sx={{width: 65}} label="Login" to="/login" component={Link} active={location.pathname === '/login'}/>
+                    <NavLink sx={{width: 80}} label="Sign Up" to="/sign-up" component={Link} active={location.pathname === '/sign-up'}/>
+                </Box>
+            </Box>
         )
     }
 }
