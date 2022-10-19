@@ -1,15 +1,19 @@
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ModalsProvider } from '@mantine/modals';
 
+export const Context = createContext(null)
+
 ReactDOM.render(
   <React.StrictMode>
-    <ModalsProvider>
-    <App />
-    </ModalsProvider>
+    <Context.Provider value={1000}>
+      <ModalsProvider>
+        <App />
+      </ModalsProvider>
+    </Context.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

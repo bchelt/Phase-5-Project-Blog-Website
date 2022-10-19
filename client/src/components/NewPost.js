@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RichTextEditor } from '@mantine/rte';
 import { Box, MultiSelect, TextInput, Button } from '@mantine/core';
+import { Context } from '../index.js';
 
 function NewPost() {
     const [title, setTitle] = useState('')
@@ -9,7 +10,7 @@ function NewPost() {
     const [allTags, setAllTags] = useState([])
     const [addedTags, setAddedTags] = useState([])
     const navigate = useNavigate()
-    console.log(allTags)
+    const width = useContext(Context)
     
     useEffect(() => {
         fetch("/tags")
@@ -58,7 +59,7 @@ function NewPost() {
         
     }
     return (
-        <Box sx={{ maxWidth: 1000 }} mx='auto'>
+        <Box sx={{ maxWidth: width }} mx='auto'>
             <form onSubmit={handleSubmit}>
                 <TextInput 
                     placeholder='Title'

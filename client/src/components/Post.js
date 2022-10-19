@@ -1,6 +1,7 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TypographyStylesProvider, Box, Tabs, Table, Textarea, Button, Group } from '@mantine/core';
+import { Context } from '../index.js'
 
 function Post({ user }) {
     const [post, setPost] = useState({})
@@ -10,6 +11,7 @@ function Post({ user }) {
     const [tags, setTags] = useState([])
     const { postId } = useParams()
     const [activeTab, setActiveTab] = useState('comments')
+    const width = useContext(Context)
     const rows = comments.map((comment) => (
         <tr key={comment.id}>
             <td>
@@ -55,7 +57,7 @@ function Post({ user }) {
         })
     }
     return (
-        <Box sx={{ maxWidth: 1000 }} mx='auto'>
+        <Box sx={{ maxWidth: width }} mx='auto'>
             <h1>{post.title}</h1>
             <div>Tags: {tags.map((tag) => (
                 <span key={tag.id}>{tag.category} </span>

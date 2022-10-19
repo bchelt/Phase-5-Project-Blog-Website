@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Text, TextInput, Textarea, Button, Tabs, TypographyStylesProvider, Menu, Burger } from '@mantine/core';
 import { openConfirmModal } from '@mantine/modals';
+import { Context } from '../index.js';
 
 function Profile({ user }) {
     const [profile, setProfile] = useState({})
@@ -13,6 +14,7 @@ function Profile({ user }) {
     const [bioEdit, setBioEdit] = useState("")
     const [editMode, setEditMode] = useState(false)
     const navigate = useNavigate()
+    const width = useContext(Context)
 
     const openModal = (id, type) => {
         console.log('here')
@@ -114,7 +116,7 @@ function Profile({ user }) {
     if (editable) {
         return (
             editMode ? (
-            <Box sx={{ maxWidth: 1000 }} mx='auto'>
+            <Box sx={{ maxWidth: width }} mx='auto'>
                 <form onSubmit={handleSubmit}>
                     
                     <TextInput label='Full Name' value={nameEdit} onChange={(e) => setNameEdit(e.target.value)} />
@@ -127,7 +129,7 @@ function Profile({ user }) {
             </Box>
             )
             : (
-            <Box sx={{ maxWidth: 1000 }} mx='auto' >
+            <Box sx={{ maxWidth: width }} mx='auto' >
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <h1>{profile.full_name}</h1>
                     {/* <Button sx={{ alignSelf: 'center' }} variant='subtle' onClick={handleClick}>Edit Profile</Button> */}
@@ -176,7 +178,7 @@ function Profile({ user }) {
         )
     } else {
         return (
-            <Box sx={{ maxWidth: 1000 }} mx='auto' >
+            <Box sx={{ maxWidth: width }} mx='auto' >
                 <Box sx={{ display: 'flex' }}>
                     <h1>{profile.full_name}</h1>
                 </Box>

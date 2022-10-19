@@ -1,11 +1,11 @@
-import React from "react"
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from "react"
 import { Link } from "react-router-dom"
 import { Box, Table, Title, Text, TypographyStylesProvider } from '@mantine/core'
-
+import { Context } from '../index.js'
 
 function Home() {
     const [posts, setPosts] = useState([])
+    const width = useContext(Context)
     const rows = posts.map((post) => (
         <tr key={post.id}>
             <td>
@@ -34,7 +34,7 @@ function Home() {
         .then((data) => setPosts(data))
     }, [])
     return (
-        <Box sx={{ maxWidth: 1000 }} mx='auto'>
+        <Box sx={{ maxWidth: width }} mx='auto'>
             <Table>
                 <thead>
                     <tr>
