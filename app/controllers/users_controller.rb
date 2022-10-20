@@ -27,6 +27,7 @@ class UsersController < ApplicationController
     def destroy
         if session[:user_id]
             User.destroy(params[:id])
+            session.delete :user_id
             head :no_content
         else
             render json: { errors: ["Not logged in"] }, status: :unauthorized

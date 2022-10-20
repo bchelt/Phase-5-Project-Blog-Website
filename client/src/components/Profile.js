@@ -4,7 +4,7 @@ import { Box, Text, TextInput, Textarea, Button, Tabs, TypographyStylesProvider,
 import { openConfirmModal } from '@mantine/modals';
 import { Context } from '../index.js';
 
-function Profile({ user }) {
+function Profile({ user, setUser }) {
     const [profile, setProfile] = useState({})
     const [posts, setPosts] = useState([])
     const [comments, setComments] = useState([])
@@ -107,6 +107,7 @@ function Profile({ user }) {
             method: "DELETE"
         }).then((res) => {
             if (res.ok) {
+                setUser(null)
                 navigate('/')
             }
         })
