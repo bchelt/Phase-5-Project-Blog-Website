@@ -17,7 +17,6 @@ function Profile({ user }) {
     const width = useContext(Context)
 
     const openModal = (id, type) => {
-        console.log('here')
         openConfirmModal({
         title: 'Please confirm',
         children: (
@@ -26,7 +25,7 @@ function Profile({ user }) {
             </Text>
         ),
         labels: { confirm: 'Confirm', cancel: 'Cancel' },
-        onCancel: () => console.log(id),
+        
         onConfirm: () => {
             if(type === 'post'){
                 deletePost(id)
